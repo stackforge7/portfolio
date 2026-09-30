@@ -1,0 +1,199 @@
+@import "tailwindcss";
+
+@theme {
+  --color-canvas: #08090c;
+  --color-surface: #111318;
+  --color-surface-raised: #16191f;
+  --color-line: rgb(255 255 255 / 0.07);
+  --color-line-strong: rgb(255 255 255 / 0.14);
+  --color-fg: #f5f7fa;
+  --color-muted: #9ba3af;
+  --color-subtle: #7d8591;
+  --color-accent: #4cc9f0;
+  --color-accent-strong: #8fdcf5;
+  --color-accent-deep: #1d8fd6;
+
+  --radius-card: 1.25rem;
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+
+  --animate-caret: caret 1.1s steps(1) infinite;
+  --animate-pipe: pipe 1.1s linear infinite;
+  --animate-mote: mote 14s ease-in-out infinite;
+  --animate-breathe: breathe 7s ease-in-out infinite;
+  --animate-ember: ember 1.4s ease-in-out infinite;
+
+  @keyframes mote {
+    0% {
+      transform: translate(0, 0);
+      opacity: 0;
+    }
+    25%,
+    70% {
+      opacity: 0.8;
+    }
+    100% {
+      transform: translate(var(--mote-dx, 20px), var(--mote-dy, -40px));
+      opacity: 0;
+    }
+  }
+
+  @keyframes breathe {
+    0%,
+    100% {
+      opacity: 0.65;
+    }
+    50% {
+      opacity: 1;
+    }
+  }
+
+  @keyframes ember {
+    0%,
+    100% {
+      box-shadow: 0 0 0 0 rgb(255 170 90 / 0.55);
+    }
+    50% {
+      box-shadow: 0 0 0 10px rgb(255 170 90 / 0);
+    }
+  }
+
+  /* Moves a dash pattern along an SVG stroke; the offset must equal the dasharray period (16px). */
+  @keyframes pipe {
+    to {
+      stroke-dashoffset: -16;
+    }
+  }
+
+  @keyframes caret {
+    0%,
+    50% {
+      opacity: 1;
+    }
+    50.01%,
+    100% {
+      opacity: 0;
+    }
+  }
+}
+
+@theme inline {
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, monospace;
+}
+
+@layer base {
+  html {
+    color-scheme: dark;
+    background-color: var(--color-canvas);
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--color-canvas);
+    color: var(--color-fg);
+    font-family: var(--font-sans);
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection {
+    background-color: rgb(76 201 240 / 0.28);
+    color: var(--color-fg);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 3px;
+    border-radius: 6px;
+  }
+
+  [id] {
+    scroll-margin-top: 6rem;
+  }
+
+  @media print {
+    html,
+    body {
+      background: white;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+@utility container-page {
+  width: 100%;
+  max-width: 76rem;
+  margin-inline: auto;
+  padding-inline: 1.25rem;
+
+  @media (width >= 48rem) {
+    padding-inline: 2rem;
+  }
+}
+
+@utility eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  line-height: 1rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-accent);
+}
+
+@utility surface-card {
+  background-color: rgb(17 19 24 / 0.72);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-card);
+}
+
+@utility bg-grid {
+  background-image:
+    linear-gradient(to right, rgb(255 255 255 / 0.035) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(255 255 255 / 0.035) 1px, transparent 1px);
+  background-size: 56px 56px;
+}
+
+/*
+ * A 16:9 stage that covers its size container (like object-fit: cover), so percent-positioned
+ * hotspots stay pinned to the artwork. Uses `translate` so Motion transforms compose on top.
+ */
+@utility scene-cover {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: max(100cqw, calc(100cqh * 16 / 9));
+  height: max(100cqh, calc(100cqw * 9 / 16));
+  translate: -50% -50%;
+}
+
+/* Thin, low-contrast scrollbar for panels over the studio scenes. */
+@utility scrollbar-subtle {
+  scrollbar-width: thin;
+  scrollbar-color: rgb(255 255 255 / 0.22) transparent;
+}
+
+@utility glass {
+  background-color: rgb(10 12 16 / 0.5);
+  border: 1px solid rgb(255 255 255 / 0.18);
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+}
+
+/* Boot overlay is skipped before first paint when html[data-booted] is set by the inline head script. */
+html[data-booted] .boot-overlay {
+  display: none;
+}

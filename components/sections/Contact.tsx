@@ -1,5 +1,9 @@
+"use client";
+
 import { ArrowUpRight, FileText, Mail, Phone } from "lucide-react";
+import posthog from "posthog-js";
 import { Section } from "@/components/layout/Section";
+import { posthogLog } from "@/lib/posthog-log";
 import { ButtonLink, buttonStyles } from "@/components/ui/Button";
 import { LinkedInIcon } from "@/components/ui/icons";
 import { Reveal } from "@/components/ui/Reveal";
@@ -21,6 +25,11 @@ const details = [
 ];
 
 export function Contact() {
+  function trackContact(method: "email" | "linkedin" | "phone" | "resume") {
+    posthog.capture("contact_initiated", { method });
+    posthogLog.info("contact_initiated", { method });
+  }
+
   return (
     <Section
       id="contact"
@@ -37,7 +46,7 @@ export function Contact() {
       />
 
       <Reveal className="flex flex-wrap gap-3">
-        <ButtonLink href={`mailto:${contact.email}`} size="lg">
+        <ButtonLink href={`mailto:${contact.email}`} onClick={() => trackContact("email")} size="lg">
           <Mail className="size-4" aria-hidden="true" />
           Email William
         </ButtonLink>
@@ -47,13 +56,21 @@ export function Contact() {
           rel="noopener noreferrer"
           variant="secondary"
           size="lg"
+          onClick={() => trackContact("linkedin")}
         >
           <LinkedInIcon className="size-4" />
           LinkedIn
           <span className="sr-only">(opens in a new tab)</span>
         </ButtonLink>
         {resume.href ? (
-          <ButtonLink href={resume.href} target="_blank" rel="noopener noreferrer" variant="secondary" size="lg">
+          <ButtonLink
+            href={resume.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            variant="secondary"
+            size="lg"
+            onClick={() => trackContact("resume")}
+          >
             <FileText className="size-4" aria-hidden="true" />
             {resume.label}
             <span className="sr-only">(opens in a new tab)</span>
@@ -86,6 +103,7 @@ export function Contact() {
                 <a
                   href={href}
                   {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+                  onClick={() => trackContact(label.toLowerCase() as "email" | "linkedin" | "phone")}
                   className="inline-flex items-center gap-1.5 break-all text-fg transition-colors hover:text-accent-strong"
                 >
                   {value}

@@ -5,7 +5,9 @@ import dynamic from "next/dynamic";
 import { usePathname } from "next/navigation";
 import { AnimatePresence, motion, MotionConfig } from "motion/react";
 import { FlaskConical } from "lucide-react";
+import posthog from "posthog-js";
 import { useLocationHash } from "@/hooks/useLocationHash";
+import { posthogLog } from "@/lib/posthog-log";
 import { scrollToSection } from "@/lib/scroll";
 import { roomAudio } from "@/lib/studio/audio";
 import { isSoundEnabled } from "@/lib/studio/preferences";
@@ -85,6 +87,9 @@ export function ExperienceProvider({ children }: { children: ReactNode }) {
         if (target) navigateStudio(target);
         return;
       }
+
+      posthog.capture("studio_entered");
+      posthogLog.info("studio_entered", { feature: "interactive_studio" });
 
       const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
       if (!reduceMotion) {

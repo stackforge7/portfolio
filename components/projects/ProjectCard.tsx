@@ -2,9 +2,11 @@
 
 import type { MouseEvent, PointerEvent } from "react";
 import { ArrowUpRight } from "lucide-react";
+import posthog from "posthog-js";
 import { MediaImage } from "@/components/ui/MediaImage";
 import { Tag } from "@/components/ui/Tag";
 import { cn } from "@/lib/cn";
+import { posthogLog } from "@/lib/posthog-log";
 import type { Project } from "@/types/portfolio";
 
 const VISIBLE_TECH = 5;
@@ -35,6 +37,8 @@ export function ProjectCard({ project, index, onOpen, wide = false, highlight = 
   function handleClick(event: MouseEvent<HTMLAnchorElement>) {
     if (isModifiedClick(event)) return;
     event.preventDefault();
+    posthog.capture("project_opened", { project_slug: project.slug });
+    posthogLog.info("project_opened", { surface: "project_card" });
     onOpen(project.slug);
   }
 

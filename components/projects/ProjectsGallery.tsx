@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useState } from "react";
+import posthog from "posthog-js";
 import { ProjectCard } from "@/components/projects/ProjectCard";
 import { ProjectModal } from "@/components/projects/ProjectModal";
 import { Reveal } from "@/components/ui/Reveal";
@@ -32,6 +33,12 @@ export function ProjectsGallery({ projects }: { projects: Project[] }) {
   const open = useCallback((slug: string) => replaceLocationHash(`${HASH_PREFIX}${slug}`), []);
   const close = useCallback(() => replaceLocationHash(""), []);
 
+  function filterBySkill(nextSkill: string | null) {
+    const selectedSkill = skill === nextSkill ? null : nextSkill;
+    posthog.capture("projects_filtered", { selected_skill: selectedSkill ?? "all" });
+    setSkill(selectedSkill);
+  }
+
   return (
     <>
       <Reveal className="mb-10">
@@ -39,14 +46,14 @@ export function ProjectsGallery({ projects }: { projects: Project[] }) {
           Filter by skill
         </p>
         <div role="group" aria-labelledby="project-skills-label" className="mt-4 flex flex-wrap gap-2">
-          <SkillChip label="All projects" count={projects.length} pressed={skill === null} onClick={() => setSkill(null)} />
+          <SkillChip label="All projects" count={projects.length} pressed={skill === null} onClick={() => filterBySkill(null)} />
           {skills.map(([name, count]) => (
             <SkillChip
               key={name}
               label={name}
               count={count}
               pressed={skill === name}
-              onClick={() => setSkill(skill === name ? null : name)}
+              onClick={() => filterBySkill(name)}
             />
           ))}
         </div>

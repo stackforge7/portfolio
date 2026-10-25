@@ -75,6 +75,16 @@ export function quadToMatrix3d(
   return `matrix3d(${values.map((value) => Number(value.toFixed(8))).join(",")})`;
 }
 
+/** Matches the `wide` CSS variant: desktops, or landscape phones too short to stack a sheet under the scene. */
+export function isWideLayout({ width, height }: ViewportSize): boolean {
+  return width >= 1024 || (width >= 640 && height <= 512);
+}
+
+/** Pixels per rem; the root font size grows on very large viewports (see globals.css). */
+export function remPx(): number {
+  return parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
+}
+
 /** How far the un-zoomed stage can be dragged horizontally on narrow screens. */
 export function panLimit(viewport: ViewportSize): number {
   return Math.max(0, (coverSize(viewport).width - viewport.width) / 2);

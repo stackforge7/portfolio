@@ -46,7 +46,7 @@ export function ProjectsWindow({ slug, onSelect, onClose }: ProjectsWindowProps)
       animate={{ opacity: 1, scale: 1, y: 0 }}
       exit={{ opacity: 0, scale: 0.96, y: 10, transition: { duration: 0.2 } }}
       transition={{ duration: 0.55, delay: 0.35, ease: EASE }}
-      className="absolute inset-x-3 top-16 bottom-20 z-30 flex flex-col overflow-hidden rounded-2xl border border-white/15 bg-[#0e1218]/92 shadow-2xl shadow-black/60 backdrop-blur-xl lg:inset-x-auto lg:top-1/2 lg:bottom-auto lg:left-1/2 lg:h-[min(40rem,76vh)] lg:w-[min(64rem,84vw)] lg:-translate-x-1/2 lg:-translate-y-1/2"
+      className="absolute inset-x-3 top-[4.5rem] bottom-20 z-30 flex flex-col overflow-hidden rounded-2xl border border-white/15 bg-[#0e1218]/92 shadow-2xl shadow-black/60 backdrop-blur-xl md:inset-x-6 md:top-20 md:bottom-[5.5rem] lg:inset-x-auto lg:top-1/2 lg:bottom-auto lg:left-1/2 lg:h-[min(40rem,calc(100svh-12rem))] lg:w-[min(64rem,84vw)] lg:-translate-x-1/2 lg:-translate-y-1/2 short:inset-x-3 short:top-16 short:bottom-16 short:h-auto short:w-auto short:translate-none"
     >
       <div className="flex h-11 shrink-0 items-center gap-2 border-b border-white/10 px-4">
         <span aria-hidden="true" className="size-2.5 rounded-full bg-white/20" />
@@ -78,7 +78,7 @@ export function ProjectsWindow({ slug, onSelect, onClose }: ProjectsWindowProps)
               All projects
             </button>
             <div className="mt-5 grid gap-6 md:grid-cols-[1.1fr_1fr] md:gap-8">
-              <ProjectGallery key={selected.id} project={selected} sizes="(min-width: 1024px) 34rem, 92vw" />
+              <ProjectGallery key={selected.id} project={selected} sizes="(min-width: 1600px) 34vw, (min-width: 1024px) 34rem, 92vw" />
 
               <div>
                 <p className="font-mono text-[0.6875rem] tracking-[0.16em] text-accent-strong uppercase">
@@ -158,7 +158,7 @@ export function ProjectsWindow({ slug, onSelect, onClose }: ProjectsWindowProps)
                       <MediaImage
                         image={project.cover}
                         decorative
-                        sizes="(min-width: 1024px) 20rem, (min-width: 640px) 45vw, 92vw"
+                        sizes="(min-width: 1600px) 20vw, (min-width: 1024px) 20rem, (min-width: 640px) 45vw, 92vw"
                         className="transition-transform duration-500 group-hover:scale-[1.03]"
                       />
                     </span>

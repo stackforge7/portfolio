@@ -21,7 +21,7 @@ const COVER_CAPTION = "Illustration. The other images are screenshots of real pu
 export function ProjectGallery({
   project,
   preloadCover = false,
-  sizes = "(min-width: 896px) 832px, 100vw",
+  sizes = "(min-width: 1600px) 52vw, (min-width: 896px) 832px, 100vw",
   className,
 }: ProjectGalleryProps) {
   const [index, setIndex] = useState(0);
@@ -68,7 +68,7 @@ export function ProjectGallery({
                 <span className="mx-auto max-w-[70%] truncate rounded-md bg-white/[0.06] px-3 py-0.5 font-mono text-[0.6875rem] text-white/60">
                   {shot.source.label}
                 </span>
-                <span aria-hidden="true" className="w-[42px]" />
+                <span aria-hidden="true" className="w-[2.625rem]" />
               </div>
               <div className="relative min-h-0 flex-1">
                 <MediaImage image={shot} sizes={sizes} className="object-top" />

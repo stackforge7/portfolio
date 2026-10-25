@@ -77,6 +77,18 @@
   }
 }
 
+/* Studio side-by-side layout: desktops, and landscape phones too short to stack overlays. Keep in sync with `isWideLayout`. */
+@custom-variant wide {
+  @media (width >= 64rem) {
+    @slot;
+  }
+  @media (width >= 40rem) and (height <= 32rem) {
+    @slot;
+  }
+}
+/* Short viewports (phones in landscape) where stacked overlays need tighter spacing. */
+@custom-variant short (@media (height <= 32rem));
+
 @theme inline {
   --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, monospace;
@@ -84,6 +96,15 @@
 
 @layer base {
   html {
+    /*
+     * Everything is sized in rem, so the root size sets the scale of the whole UI:
+     * - Very large viewports (big monitors, or zoomed out) grow it, from 1600×1000 up to 3×, so the
+     *   layout keeps its proportions instead of shrinking to a strip in the middle.
+     * - Unusually small viewports (zoomed in past ~200% on a desktop) shrink it with the shorter
+     *   side, down to half, so controls stop crowding out the page. Phones and 200% zoom keep the
+     *   visitor's default size.
+     */
+    font-size: min(300%, max(min(100%, max(50%, 4.5vmin)), min(1vw, 1.6vh)));
     color-scheme: dark;
     background-color: var(--color-canvas);
     scroll-behavior: smooth;

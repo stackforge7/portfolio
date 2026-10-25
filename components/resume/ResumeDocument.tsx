@@ -32,11 +32,13 @@ export function ResumeDocument({ showPhone = false, headingLevel = 3, className 
       <header className="border-b-2 border-stone-900 pb-5">
         <Title className="text-4xl leading-none tracking-tight text-stone-950 md:text-5xl">{profile.name}</Title>
         <p className="mt-3 font-sans text-sm font-medium text-stone-700">{resume.headline}</p>
-        <p className="mt-2 flex flex-wrap gap-x-3 gap-y-1 font-sans text-[0.8125rem] text-stone-600">
+        <p className="mt-2 flex flex-col items-start gap-1 font-sans text-[0.8125rem] text-stone-600 sm:flex-row sm:flex-wrap sm:gap-x-3">
           <a href={`mailto:${contact.email}`} className="underline-offset-2 hover:underline">
             {contact.email}
           </a>
-          <span aria-hidden="true">|</span>
+          <span aria-hidden="true" className="max-sm:hidden">
+            |
+          </span>
           <a
             href={contact.linkedin.url}
             target="_blank"
@@ -48,7 +50,9 @@ export function ResumeDocument({ showPhone = false, headingLevel = 3, className 
           </a>
           {showPhone && (
             <>
-              <span aria-hidden="true">|</span>
+              <span aria-hidden="true" className="max-sm:hidden">
+                |
+              </span>
               <a href={`tel:+1${contact.phone.replace(/\D/g, "")}`} className="underline-offset-2 hover:underline">
                 {contact.phone}
               </a>

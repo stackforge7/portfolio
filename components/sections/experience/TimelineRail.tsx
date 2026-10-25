@@ -11,11 +11,11 @@ export function TimelineRail({ children }: { children: ReactNode }) {
 
   return (
     <div ref={ref} className="relative">
-      <div aria-hidden="true" className="absolute top-2 bottom-2 left-[7px] w-px bg-line md:left-[calc(12rem+7px)]" />
+      <div aria-hidden="true" className="absolute top-2 bottom-2 left-[0.4375rem] w-px bg-line md:left-[12.4375rem]" />
       <motion.div
         aria-hidden="true"
         style={{ scaleY }}
-        className="absolute top-2 bottom-2 left-[7px] w-px origin-top bg-gradient-to-b from-accent via-accent/60 to-accent/10 md:left-[calc(12rem+7px)]"
+        className="absolute top-2 bottom-2 left-[0.4375rem] w-px origin-top bg-gradient-to-b from-accent via-accent/60 to-accent/10 md:left-[12.4375rem]"
       />
       <ol className="space-y-14 md:space-y-20">{children}</ol>
     </div>

@@ -82,7 +82,7 @@ export function JournalInspector({ onOpenResume }: JournalInspectorProps) {
   return (
     <section
       aria-label="Notes: the project journal"
-      className="absolute inset-0 z-30 flex flex-col items-center justify-center gap-5 px-3 pt-16 pb-20 lg:flex-row lg:items-center lg:gap-8 lg:px-8"
+      className="absolute inset-0 z-30 flex flex-col items-center justify-center gap-5 px-3 pt-[4.5rem] pb-20 lg:flex-row lg:items-center lg:gap-8 lg:px-8 short:pt-16 short:pb-16"
     >
       <motion.div
         initial={{ opacity: 0, y: 40, rotateX: 12 }}
@@ -92,7 +92,7 @@ export function JournalInspector({ onOpenResume }: JournalInspectorProps) {
         className="flex w-full flex-col items-center lg:w-auto"
       >
         <Book pages={pages} shown={shown} perView={perView} turn={turn} onTurnComplete={finishTurn} />
-        <div className="mt-4 flex items-center gap-4 text-white">
+        <div className="mt-4 flex items-center gap-4 text-white short:mt-2">
           <button
             type="button"
             onClick={() => goTo(shown - perView)}
@@ -148,7 +148,7 @@ function Book({ pages, shown, perView, turn, onTurnComplete }: BookProps) {
   if (perView === 1) {
     const forward = turn ? turn.to > turn.from : true;
     return (
-      <div className="relative h-[min(34rem,calc(100svh-15rem))] w-[min(26rem,calc(100vw-1.5rem))] [perspective:1800px]">
+      <div className="relative h-[min(34rem,calc(100svh-15rem))] w-[min(26rem,calc(100vw-1.5rem))] [perspective:1800px] short:h-[calc(100svh-11.5rem)] short:w-[min(34rem,calc(100vw-1.5rem))]">
         <Paper side="single">{page(turn ? (forward ? turn.to : turn.from) : shown)}</Paper>
         {turn && (
           <motion.div
@@ -177,7 +177,7 @@ function Book({ pages, shown, perView, turn, onTurnComplete }: BookProps) {
 
   return (
     <div className="relative rounded-md bg-[#3b2a1c] p-2.5 shadow-[0_40px_80px_-30px_rgb(0_0_0/0.9)]">
-      <div className="relative flex h-[min(36rem,calc(100svh-14rem))] w-[min(56rem,58vw)] [perspective:2400px]">
+      <div className="relative flex h-[min(36rem,calc(100svh-14rem))] w-[min(56rem,58vw)] [perspective:2400px] short:h-[calc(100svh-12.5rem)]">
         <div className="relative h-full w-1/2">
           <Paper side="left">{page(left)}</Paper>
         </div>

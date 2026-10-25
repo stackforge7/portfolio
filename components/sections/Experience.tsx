@@ -16,9 +16,9 @@ function TimelineMarker() {
   return (
     <span
       aria-hidden="true"
-      className="absolute top-1.5 left-0 flex size-[15px] items-center justify-center rounded-full border border-accent/50 bg-canvas md:left-48"
+      className="absolute top-1.5 left-0 flex size-[0.9375rem] items-center justify-center rounded-full border border-accent/50 bg-canvas md:left-48"
     >
-      <span className="size-[5px] rounded-full bg-accent" />
+      <span className="size-[0.3125rem] rounded-full bg-accent" />
     </span>
   );
 }

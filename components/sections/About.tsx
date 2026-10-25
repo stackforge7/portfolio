@@ -30,7 +30,7 @@ export function About() {
           <figure className="group surface-card relative aspect-[4/3] overflow-hidden">
             <MediaImage
               image={portrait}
-              sizes="(min-width: 1024px) 28rem, (min-width: 768px) 80vw, 100vw"
+              sizes="(min-width: 1600px) 28vw, (min-width: 1024px) 28rem, (min-width: 768px) 80vw, 100vw"
               className="object-[50%_30%] transition-transform duration-[1200ms] ease-out-expo group-hover:scale-[1.03]"
             />
             <div

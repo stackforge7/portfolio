@@ -69,8 +69,8 @@ export function ShelfInspector({ itemId, onSelect, onOpenProject }: ShelfInspect
   }, []);
 
   return (
-    <section aria-label="Bookshelf" className="absolute inset-0 z-30 flex flex-col items-center pt-16 pb-20 lg:flex-row lg:justify-center lg:gap-12 lg:px-10">
-      <div className="flex w-full flex-1 flex-col items-center justify-center lg:max-w-xl">
+    <section aria-label="Bookshelf" className="absolute inset-0 z-30 flex flex-col items-center pt-[4.5rem] pb-20 wide:flex-row wide:justify-center wide:gap-12 wide:px-10 short:gap-6 short:px-4 short:pt-16 short:pb-16">
+      <div className="flex min-h-0 w-full flex-1 flex-col items-center justify-center wide:max-w-xl short:self-stretch">
         <div className="glass flex items-center gap-1 rounded-full p-1 text-white">
           <button
             type="button"
@@ -94,7 +94,8 @@ export function ShelfInspector({ itemId, onSelect, onOpenProject }: ShelfInspect
           </button>
         </div>
 
-        <div className="relative mt-4 flex w-full flex-1 items-center justify-center [perspective:1200px]">
+        {/* The objects have fixed sizes, so they shrink as a whole on shorter screens. */}
+        <div className="relative mt-4 flex min-h-0 w-full flex-1 items-center justify-center [perspective:1200px] [@media(width<64rem)_and_(42rem<height<=48rem)]:scale-[0.8] [@media(width<64rem)_and_(32rem<height<=42rem)]:scale-[0.7] short:mt-2 short:scale-[0.6]">
           <AnimatePresence mode="wait">
             <motion.div
               key={item.id}
@@ -107,7 +108,7 @@ export function ShelfInspector({ itemId, onSelect, onOpenProject }: ShelfInspect
             </motion.div>
           </AnimatePresence>
         </div>
-        <p className="mt-2 hidden items-center gap-2 font-mono text-[0.625rem] tracking-[0.16em] text-white/60 uppercase sm:flex">
+        <p className="mt-2 hidden items-center gap-2 font-mono text-[0.625rem] tracking-[0.16em] text-white/60 uppercase sm:flex short:hidden">
           <Hand className="size-3.5" aria-hidden="true" />
           Drag to turn · ← → to browse
         </p>
@@ -120,7 +121,7 @@ export function ShelfInspector({ itemId, onSelect, onOpenProject }: ShelfInspect
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, transition: { duration: 0.15 } }}
           transition={{ duration: 0.4, ease: EASE, delay: 0.2 }}
-          className="glass scrollbar-subtle mx-3 mt-4 max-h-[34svh] w-[calc(100%-1.5rem)] overflow-y-auto rounded-3xl bg-black/55 p-6 text-white lg:mx-0 lg:mt-0 lg:max-h-[70vh] lg:w-[24rem]"
+          className="glass scrollbar-subtle mx-3 mt-4 max-h-[34svh] w-[calc(100%-1.5rem)] overflow-y-auto rounded-3xl bg-black/55 p-6 text-white wide:mx-0 wide:mt-0 wide:max-h-[70vh] wide:w-[24rem] short:p-5"
         >
           <p className="font-mono text-[0.6875rem] tracking-[0.18em] text-accent-strong uppercase">{item.subtitle}</p>
           <h3 className="mt-2 text-2xl font-semibold tracking-tight">{item.title}</h3>
@@ -144,7 +145,7 @@ export function ShelfInspector({ itemId, onSelect, onOpenProject }: ShelfInspect
                 <div key={fact.value}>
                   {fact.image && (
                     <div className="relative mb-2.5 aspect-[16/9] overflow-hidden rounded-xl border border-white/10">
-                      <MediaImage image={fact.image} sizes="(min-width: 1024px) 21rem, 90vw" />
+                      <MediaImage image={fact.image} sizes="(min-width: 1600px) 21vw, (min-width: 1024px) 21rem, 90vw" />
                     </div>
                   )}
                   <dt className="font-mono text-[0.625rem] tracking-[0.16em] text-white/55 uppercase">{fact.label}</dt>
@@ -230,7 +231,9 @@ function TurnableObject({ item }: { item: ShelfItem }) {
   );
 }
 
-const BOOK = { width: 210, height: 300, depth: 44 };
+/** Book size in rem, so it scales with the rest of the UI. */
+const BOOK = { width: 13.125, height: 18.75, depth: 2.75 };
+const rem = (value: number) => `${value}rem`;
 
 function Book({ item }: { item: ShelfItem }) {
   const { width, height, depth } = BOOK;
@@ -243,10 +246,10 @@ function Book({ item }: { item: ShelfItem }) {
   const ink = light ? "text-stone-800" : "text-[#e9d9a8]";
 
   return (
-    <div className="relative [transform-style:preserve-3d]" style={{ width, height }}>
+    <div className="relative [transform-style:preserve-3d]" style={{ width: rem(width), height: rem(height) }}>
       <div
         className={`absolute inset-0 flex flex-col justify-between rounded-r-md p-6 font-serif ${ink}`}
-        style={{ ...cloth, transform: `translateZ(${depth / 2}px)` }}
+        style={{ ...cloth, transform: `translateZ(${rem(depth / 2)})` }}
       >
         <p className="font-sans text-[0.625rem] tracking-[0.24em] uppercase opacity-80">
           {item.author ? "Favorite" : "Skills"}
@@ -261,16 +264,16 @@ function Book({ item }: { item: ShelfItem }) {
       </div>
       <div
         className="absolute inset-0 rounded-l-md"
-        style={{ ...cloth, transform: `rotateY(180deg) translateZ(${depth / 2}px)` }}
+        style={{ ...cloth, transform: `rotateY(180deg) translateZ(${rem(depth / 2)})` }}
       />
       <div
         className={`absolute top-0 flex items-center justify-center font-serif ${ink}`}
         style={{
           ...cloth,
-          width: depth,
-          height,
-          left: (width - depth) / 2,
-          transform: `rotateY(-90deg) translateZ(${width / 2}px)`,
+          width: rem(depth),
+          height: rem(height),
+          left: rem((width - depth) / 2),
+          transform: `rotateY(-90deg) translateZ(${rem(width / 2)})`,
         }}
       >
         <span className="text-sm whitespace-nowrap [writing-mode:vertical-rl]">{item.author ?? item.title}</span>
@@ -278,20 +281,20 @@ function Book({ item }: { item: ShelfItem }) {
       <div
         className="absolute top-1 bg-[repeating-linear-gradient(90deg,#f3ecdc_0_1px,#e2d8c2_1px_2px)]"
         style={{
-          width: depth - 4,
-          height: height - 8,
-          left: (width - depth) / 2 + 2,
-          transform: `rotateY(90deg) translateZ(${width / 2 - 3}px)`,
+          width: rem(depth - 0.25),
+          height: rem(height - 0.5),
+          left: rem((width - depth) / 2 + 0.125),
+          transform: `rotateY(90deg) translateZ(${rem(width / 2 - 0.1875)})`,
         }}
       />
       <div
         className="absolute left-0"
         style={{
           ...cloth,
-          width,
-          height: depth,
-          top: (height - depth) / 2,
-          transform: `rotateX(90deg) translateZ(${height / 2}px)`,
+          width: rem(width),
+          height: rem(depth),
+          top: rem((height - depth) / 2),
+          transform: `rotateX(90deg) translateZ(${rem(height / 2)})`,
         }}
       />
     </div>

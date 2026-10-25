@@ -2,6 +2,7 @@
 
 import { Children, useId, useState, type ReactNode } from "react";
 import { ChevronDown } from "lucide-react";
+import posthog from "posthog-js";
 import { cn } from "@/lib/cn";
 
 interface ExpandableListProps {
@@ -17,6 +18,11 @@ export function ExpandableList({ children, initialCount = 3, className }: Expand
   const items = Children.toArray(children);
   const hiddenCount = items.length - initialCount;
 
+  function toggleExpanded() {
+    if (!expanded) posthog.capture("experience_expanded", { additional_items: hiddenCount });
+    setExpanded((value) => !value);
+  }
+
   return (
     <div>
       <ul id={listId} className={className}>
@@ -31,7 +37,7 @@ export function ExpandableList({ children, initialCount = 3, className }: Expand
           type="button"
           aria-expanded={expanded}
           aria-controls={listId}
-          onClick={() => setExpanded((value) => !value)}
+          onClick={toggleExpanded}
           className="mt-5 inline-flex items-center gap-2 font-mono text-[0.6875rem] tracking-[0.16em] text-accent uppercase transition-colors hover:text-accent-strong"
         >
           {expanded ? "Show less" : `Show ${hiddenCount} more`}

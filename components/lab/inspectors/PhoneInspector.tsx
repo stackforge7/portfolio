@@ -43,7 +43,7 @@ export function PhoneInspector({ onClose }: { onClose: () => void }) {
 
   return (
     <div
-      className="absolute inset-0 z-30 flex items-center justify-center p-4 pt-16 pb-20 [perspective:1400px]"
+      className="absolute inset-0 z-30 flex items-center justify-center p-4 pt-[4.5rem] pb-20 [perspective:1400px] short:pt-16 short:pb-16"
       onPointerMove={onPointerMove}
       onPointerLeave={settle}
     >
@@ -53,16 +53,16 @@ export function PhoneInspector({ onClose }: { onClose: () => void }) {
         animate={{ opacity: 1, y: 0, rotateX: 0, scale: 1 }}
         exit={{ opacity: 0, y: 200, rotateX: 24, scale: 0.75, transition: { duration: 0.45, ease: [0.4, 0, 0.6, 1] } }}
         transition={{ type: "spring", stiffness: 120, damping: 18, mass: 0.9, delay: 0.25 }}
-        className="relative aspect-[300/620] h-[min(40rem,100%)] [transform-style:preserve-3d]"
+        className="relative aspect-[300/620] h-[min(40rem,100%)] max-w-full [transform-style:preserve-3d] short:aspect-auto short:h-full short:w-[min(34rem,100%)]"
       >
         <motion.div
           style={{ rotateX: tiltX, rotateY: tiltY }}
-          className="absolute inset-0 rounded-[3rem] border border-white/20 bg-[#0b0d11] p-2.5 shadow-[0_40px_80px_-20px_rgb(0_0_0/0.8),inset_0_0_0_1px_rgb(255_255_255/0.06)]"
+          className="absolute inset-0 rounded-[3rem] border border-white/20 bg-[#0b0d11] p-2.5 shadow-[0_40px_80px_-20px_rgb(0_0_0/0.8),inset_0_0_0_1px_rgb(255_255_255/0.06)] short:rounded-[2rem]"
         >
-          <div className="relative flex h-full flex-col overflow-hidden rounded-[2.4rem] bg-[radial-gradient(ellipse_at_top,#1b3550,#0a0f18_65%)] text-white">
-            <div aria-hidden="true" className="mx-auto mt-2.5 h-6 w-24 shrink-0 rounded-full bg-black" />
+          <div className="scrollbar-subtle relative flex h-full flex-col overflow-hidden rounded-[2.4rem] bg-[radial-gradient(ellipse_at_top,#1b3550,#0a0f18_65%)] text-white short:overflow-y-auto short:overscroll-contain short:rounded-[1.5rem]">
+            <div aria-hidden="true" className="mx-auto mt-2.5 h-6 w-24 shrink-0 rounded-full bg-black short:hidden" />
 
-            <div className="flex items-center justify-between px-5 pt-4">
+            <div className="flex items-center justify-between px-5 pt-4 short:pt-3">
               <p className="font-mono text-[0.625rem] tracking-[0.18em] text-white/50 uppercase">Contacts</p>
               <button
                 type="button"
@@ -75,8 +75,8 @@ export function PhoneInspector({ onClose }: { onClose: () => void }) {
               </button>
             </div>
 
-            <div className="mt-4 flex flex-col items-center px-5 text-center">
-              <span className="relative size-20 overflow-hidden rounded-full ring-2 ring-white/20">
+            <div className="mt-4 flex flex-col items-center px-5 text-center short:mt-1 short:flex-row short:gap-4 short:text-left">
+              <span className="relative size-20 shrink-0 overflow-hidden rounded-full ring-2 ring-white/20 short:size-14">
                 {profile.photo ? (
                   <MediaImage image={profile.photo} decorative sizes="80px" className="object-[50%_30%]" />
                 ) : (
@@ -85,11 +85,13 @@ export function PhoneInspector({ onClose }: { onClose: () => void }) {
                   </span>
                 )}
               </span>
-              <h3 className="mt-3 text-xl font-semibold">{profile.name}</h3>
-              <p className="mt-1 text-xs leading-snug text-white/60">{profile.headline}</p>
+              <div className="short:min-w-0">
+                <h3 className="mt-3 text-xl font-semibold short:mt-0">{profile.name}</h3>
+                <p className="mt-1 text-xs leading-snug text-white/60">{profile.headline}</p>
+              </div>
             </div>
 
-            <div role="tablist" aria-label="Phone screens" className="mx-5 mt-5 grid grid-cols-2 rounded-full bg-white/10 p-1 text-sm">
+            <div role="tablist" aria-label="Phone screens" className="mx-5 mt-5 grid shrink-0 grid-cols-2 rounded-full bg-white/10 p-1 text-sm short:mt-3">
               {(["card", "message"] as const).map((value) => (
                 <button
                   key={value}
@@ -109,7 +111,7 @@ export function PhoneInspector({ onClose }: { onClose: () => void }) {
               ))}
             </div>
 
-            <div className="scrollbar-subtle min-h-0 flex-1 overflow-y-auto overscroll-contain px-5 pt-4 pb-6">
+            <div className="scrollbar-subtle min-h-0 flex-1 overflow-y-auto overscroll-contain px-5 pt-4 pb-6 short:flex-none short:overflow-visible">
               {tab === "card" ? <ContactCard /> : <MessageComposer />}
             </div>
           </div>

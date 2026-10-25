@@ -20,18 +20,18 @@ import { useLockBodyScroll } from "@/hooks/useLockBodyScroll";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { useViewportSize, type ViewportSize } from "@/hooks/useViewportSize";
 import { cn } from "@/lib/cn";
-import { coverSize, focusCamera, panLimit, type CameraTransform } from "@/lib/scene";
+import { coverSize, focusCamera, isWideLayout, panLimit, remPx, type CameraTransform } from "@/lib/scene";
 import { roomAudio, type RoomSound } from "@/lib/studio/audio";
 import { setSoundEnabled, useSoundEnabled } from "@/lib/studio/preferences";
 import { navigateStudio, navigateStudioUp, parseStudioHash } from "@/lib/studio/route";
 import type { StudioHotspot, StudioInspectorId, StudioRoute, StudioView, StudioViewId } from "@/types/portfolio";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
-const DESKTOP_MIN_WIDTH = 1024;
-const PANEL_GAP = 24;
+/** Panel and sheet spacing in rem, matching the classes on `LabPanel`. */
+const PANEL_GAP = 1.5;
 /** Mobile sheet height as a share of the viewport, plus the space reserved for the bottom control. */
 const SHEET_RATIO = 0.56;
-const SHEET_OFFSET = 80;
+const SHEET_OFFSET = 5;
 const TITLE_ID = "studio-title";
 const REST: CameraTransform = { x: 0, y: 0, scale: 1 };
 const PANEL_INSPECTORS = new Set<StudioInspectorId>(["experience", "systems", "about", "resume"]);
@@ -56,8 +56,8 @@ function isPanelInspector(id: StudioInspectorId | null): id is PanelInspectorId 
   return id !== null && PANEL_INSPECTORS.has(id);
 }
 
-function panelWidth(viewportWidth: number, wide: boolean) {
-  return wide ? Math.min(760, viewportWidth * 0.56) : Math.min(480, viewportWidth * 0.4);
+function panelWidth(viewportWidth: number, wide: boolean, rem: number) {
+  return wide ? Math.min(47.5 * rem, viewportWidth * 0.56) : Math.min(30 * rem, viewportWidth * 0.4);
 }
 
 /** Objects on the right of the frame get their panel on the left so they stay visible. */
@@ -75,11 +75,12 @@ function inspectorCamera(view: StudioView, route: StudioRoute, viewport: Viewpor
   if (!hotspot?.focus) return REST;
   let target = { x: 0, y: 0 };
   if (isPanelInspector(route.inspector)) {
-    if (viewport.width >= DESKTOP_MIN_WIDTH) {
-      const offset = (panelWidth(viewport.width, route.inspector === "resume") + PANEL_GAP) / 2;
+    const rem = remPx();
+    if (isWideLayout(viewport)) {
+      const offset = (panelWidth(viewport.width, route.inspector === "resume", rem) + PANEL_GAP * rem) / 2;
       target = { x: panelSide(hotspot) === "right" ? -offset : offset, y: 0 };
     } else {
-      target = { x: 0, y: (viewport.height * (1 - SHEET_RATIO) - SHEET_OFFSET) / 2 - viewport.height / 2 };
+      target = { x: 0, y: (viewport.height * (1 - SHEET_RATIO) - SHEET_OFFSET * rem) / 2 - viewport.height / 2 };
     }
   }
   return focusCamera(hotspot.focus, hotspot.focus.zoom, viewport, target);
@@ -335,7 +336,8 @@ function Studio({ route, containerRef, arrival, leaving, onArrived, onLeft, onUp
             <Ambient view={id} />
             {view.screens.length > 0 && <SceneScreens screens={view.screens} stage={stage} active={role === "active"} />}
 
-            <div inert={!interactive} className={cn("transition-opacity duration-300", !interactive && "opacity-0")}>
+            {/* On short screens the pills would sit under the controls; the object list below replaces them. */}
+            <div inert={!interactive} className={cn("transition-opacity duration-300 short:hidden", !interactive && "opacity-0")}>
               {view.hotspots.map((item, index) => {
                 const key = `${id}:${item.id}`;
                 return (
@@ -385,7 +387,7 @@ function Studio({ route, containerRef, arrival, leaving, onArrived, onLeft, onUp
       {!route.inspector && !leaving && (
         <nav
           aria-label={`Objects in ${lowerTitle(active.title)}`}
-          className="absolute inset-x-0 bottom-20 z-20 flex gap-2 overflow-x-auto px-4 pb-1 [scrollbar-width:none] md:hidden"
+          className="absolute inset-x-0 bottom-20 z-20 flex gap-2 overflow-x-auto px-4 pb-1 [scrollbar-width:none] lg:hidden short:bottom-16 short:flex [&>:first-child]:ml-auto [&>:last-child]:mr-auto"
         >
           {active.hotspots.map((item) => (
             <button
@@ -408,7 +410,7 @@ function Studio({ route, containerRef, arrival, leaving, onArrived, onLeft, onUp
         )}
       </AnimatePresence>
 
-      <div className="absolute inset-x-0 bottom-5 z-40 flex justify-center">
+      <div className="absolute inset-x-0 bottom-5 z-40 flex justify-center short:bottom-3">
         <button
           type="button"
           onClick={onUp}
@@ -540,11 +542,11 @@ function LabPanel({ label, wide, side, children }: LabPanelProps) {
       transition={{ duration: 0.5, delay: 0.3, ease: EASE }}
       className={cn(
         "scrollbar-subtle absolute inset-x-3 bottom-20 z-30 max-h-[56svh] overflow-y-auto overscroll-contain rounded-3xl p-6 shadow-2xl shadow-black/50 focus:outline-none md:p-8",
-        "lg:inset-x-auto lg:top-20 lg:bottom-24 lg:max-h-none",
-        side === "right" ? "lg:right-6" : "lg:left-6",
+        "wide:inset-x-auto wide:top-20 wide:bottom-24 wide:max-h-none short:top-16 short:bottom-16 short:rounded-2xl short:p-5",
+        side === "right" ? "wide:right-6 short:right-3" : "wide:left-6 short:left-3",
         wide
-          ? "border border-stone-300 bg-[#f4efe6] lg:w-[min(47.5rem,56vw)]"
-          : "glass bg-black/55 lg:w-[min(30rem,40vw)]",
+          ? "border border-stone-300 bg-[#f4efe6] wide:w-[min(47.5rem,56vw)]"
+          : "glass bg-black/55 wide:w-[min(30rem,40vw)]",
       )}
     >
       {children}
@@ -564,7 +566,7 @@ function StudioControls({ onOpenSection, onLeave }: { onOpenSection: (id: string
   }
 
   return (
-    <div className="absolute inset-x-0 top-0 z-40 flex items-center justify-between gap-3 p-4 md:p-6">
+    <div className="absolute inset-x-0 top-0 z-40 flex items-center justify-between gap-3 p-4 md:p-6 short:p-3">
       <p className="font-mono text-[0.6875rem] tracking-[0.24em] text-white/80 uppercase max-sm:invisible">
         {profile.name} <span className="text-white/45">· Studio</span>
       </p>

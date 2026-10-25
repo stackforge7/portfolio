@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useState } from "react";
+import posthog from "posthog-js";
 import { ProjectCard } from "@/components/projects/ProjectCard";
 import { ProjectModal } from "@/components/projects/ProjectModal";
 import { Reveal } from "@/components/ui/Reveal";
@@ -32,21 +33,32 @@ export function ProjectsGallery({ projects }: { projects: Project[] }) {
   const open = useCallback((slug: string) => replaceLocationHash(`${HASH_PREFIX}${slug}`), []);
   const close = useCallback(() => replaceLocationHash(""), []);
 
+  function filterBySkill(nextSkill: string | null) {
+    const selectedSkill = skill === nextSkill ? null : nextSkill;
+    posthog.capture("projects_filtered", { selected_skill: selectedSkill ?? "all" });
+    setSkill(selectedSkill);
+  }
+
   return (
     <>
       <Reveal className="mb-10">
         <p id="project-skills-label" className="font-mono text-[0.6875rem] tracking-[0.16em] text-subtle uppercase">
           Filter by skill
         </p>
-        <div role="group" aria-labelledby="project-skills-label" className="mt-4 flex flex-wrap gap-2">
-          <SkillChip label="All projects" count={projects.length} pressed={skill === null} onClick={() => setSkill(null)} />
+        {/* One swipeable row on phones; wraps once there is room. */}
+        <div
+          role="group"
+          aria-labelledby="project-skills-label"
+          className="-mx-5 mt-4 flex gap-2 overflow-x-auto px-5 pb-1 [scrollbar-width:none] md:mx-0 md:flex-wrap md:overflow-visible md:px-0 md:pb-0"
+        >
+          <SkillChip label="All projects" count={projects.length} pressed={skill === null} onClick={() => filterBySkill(null)} />
           {skills.map(([name, count]) => (
             <SkillChip
               key={name}
               label={name}
               count={count}
               pressed={skill === name}
-              onClick={() => setSkill(skill === name ? null : name)}
+              onClick={() => filterBySkill(name)}
             />
           ))}
         </div>
@@ -90,7 +102,7 @@ function SkillChip({ label, count, pressed, onClick }: SkillChipProps) {
       aria-pressed={pressed}
       onClick={onClick}
       className={cn(
-        "inline-flex h-8 items-center gap-2 rounded-full border px-3 text-[0.8125rem] transition-colors",
+        "inline-flex h-8 shrink-0 items-center gap-2 rounded-full border px-3 text-[0.8125rem] whitespace-nowrap transition-colors",
         pressed
           ? "border-accent/50 bg-accent/15 text-fg"
           : "border-line bg-white/[0.02] text-muted hover:border-line-strong hover:text-fg",

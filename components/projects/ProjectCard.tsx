@@ -2,9 +2,11 @@
 
 import type { MouseEvent, PointerEvent } from "react";
 import { ArrowUpRight } from "lucide-react";
+import posthog from "posthog-js";
 import { MediaImage } from "@/components/ui/MediaImage";
 import { Tag } from "@/components/ui/Tag";
 import { cn } from "@/lib/cn";
+import { posthogLog } from "@/lib/posthog-log";
 import type { Project } from "@/types/portfolio";
 
 const VISIBLE_TECH = 5;
@@ -35,6 +37,8 @@ export function ProjectCard({ project, index, onOpen, wide = false, highlight = 
   function handleClick(event: MouseEvent<HTMLAnchorElement>) {
     if (isModifiedClick(event)) return;
     event.preventDefault();
+    posthog.capture("project_opened", { project_slug: project.slug });
+    posthogLog.info("project_opened", { surface: "project_card" });
     onOpen(project.slug);
   }
 
@@ -66,7 +70,11 @@ export function ProjectCard({ project, index, onOpen, wide = false, highlight = 
         <MediaImage
           image={project.cover}
           decorative
-          sizes={wide ? "(min-width: 1216px) 1152px, 100vw" : "(min-width: 1216px) 568px, (min-width: 768px) 50vw, 100vw"}
+          sizes={
+            wide
+              ? "(min-width: 1600px) 72vw, (min-width: 1216px) 1152px, 100vw"
+              : "(min-width: 1600px) 36vw, (min-width: 1216px) 568px, (min-width: 768px) 50vw, 100vw"
+          }
           className="transition-transform duration-[1200ms] ease-out-expo group-hover:scale-[1.04]"
         />
         <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-t from-surface via-surface/10 to-transparent" />

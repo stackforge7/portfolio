@@ -23,7 +23,7 @@ export default function ResumePage() {
             Back to portfolio
           </Link>
         </div>
-        <div className="rounded-[1.5rem] bg-[#f7f3ec] p-7 shadow-2xl shadow-black/40 sm:p-10 md:p-14 print:rounded-none print:bg-white print:p-0 print:shadow-none">
+        <div className="rounded-[1.5rem] bg-[#f7f3ec] p-5 shadow-2xl shadow-black/40 sm:p-10 md:p-14 print:rounded-none print:bg-white print:p-0 print:shadow-none">
           <ResumeDocument headingLevel={1} showPhone />
         </div>
       </div>
